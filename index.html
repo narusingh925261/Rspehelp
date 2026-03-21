@@ -2,276 +2,71 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>मदद का हाथ - सबका साथ</title>
+    <title>Admin Panel - Mission Help</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-
-    <!-- Adsterra Scripts -->
-    <script src="https://pl28926111.profitablecpmratenetwork.com/12/15/fb/1215fb57c30c4cef7e5d7329a5f9cc53.js"></script>
-    <script src="https://pl28927780.profitablecpmratenetwork.com/a7/6e/b4/a76eb4e64e7550bb4bf787ad5dbaa0b4.js"></script>
-
-    <style>
-        body { background-color: #f0f2f5; font-family: 'Segoe UI', sans-serif; -webkit-tap-highlight-color: transparent; }
-        .mobile-frame { max-width: 480px; margin: 0 auto; background: white; min-height: 100vh; position: relative; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .orange-grad { background: linear-gradient(135deg, #FF9933 0%, #FF5722 100%); }
-        .nav-active { color: #f97316 !important; }
-        .notice-card { background: #fff4e6; border-left: 5px solid #f97316; }
-    </style>
 </head>
-<body>
+<body class="bg-gray-100 p-6 min-h-screen flex items-center justify-center">
 
-<div class="mobile-frame pb-24 shadow-2xl">
-    
-    <!-- Top Header -->
-    <div class="p-4 flex justify-between items-center bg-white border-b sticky top-0 z-50">
-        <div class="flex items-center space-x-3" onclick="switchTab('profile')">
-            <img id="userImg" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="w-10 h-10 rounded-full border-2 border-orange-500">
+    <div class="bg-white rounded-[50px] p-10 w-full max-w-md shadow-2xl">
+        <h1 class="text-3xl font-black text-center mb-10 text-gray-800">Mission Control ⚙️</h1>
+        
+        <div class="space-y-6">
+            <!-- Fund Update -->
             <div>
-                <p id="userName" class="text-xs font-black text-gray-800">नमस्ते, मेहमान</p>
-                <p id="userRankInfo" class="text-[9px] text-orange-600 font-bold uppercase">Ranking: #--</p>
+                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-2">कुल एकत्रित फंड (₹)</label>
+                <input id="fundVal" type="number" class="w-full bg-gray-50 p-5 rounded-3xl outline-none focus:ring-2 ring-orange-500 font-black text-2xl text-orange-600 mt-1">
             </div>
-        </div>
-        <div class="text-right">
-            <p id="topPoints" class="text-xl font-black text-orange-600">0</p>
-            <p class="text-[8px] font-bold text-gray-400 uppercase">Support Points</p>
-        </div>
-    </div>
 
-    <!-- TAB 1: HOME -->
-    <div id="homeTab" class="tab-content active animate__animated animate__fadeIn">
-        
-        <!-- Total Fund Card -->
-        <div class="orange-grad text-white p-8 rounded-b-[40px] text-center shadow-lg">
-            <p class="text-[10px] font-bold uppercase tracking-widest opacity-90 mb-1">कुल एकत्रित मदद राशि ❤️</p>
-            <h1 id="totalFundDisplay" class="text-5xl font-black italic">₹ 0</h1>
-            <p class="mt-3 text-[11px] opacity-80 italic italic">“यह राशि एडमिन द्वारा अपडेट की जाती है”</p>
-        </div>
+            <hr class="opacity-50">
 
-        <!-- 📢 Important Notice Card (Controlled by Admin) -->
-        <div id="noticeContainer" class="hidden px-5 mt-4">
-            <div class="notice-card p-4 rounded-2xl shadow-sm">
-                <div class="flex items-center mb-1">
-                    <span class="text-lg mr-2">📢</span>
-                    <h4 class="text-sm font-black text-orange-800 uppercase tracking-tighter">महत्वपूर्ण सूचना</h4>
-                </div>
-                <p id="noticeText" class="text-xs text-orange-900 font-medium leading-relaxed"></p>
-            </div>
-        </div>
-
-        <!-- Emotional Image -->
-        <div class="p-5">
-            <div class="relative rounded-3xl overflow-hidden shadow-xl border-4 border-white h-48">
-                <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=600" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/70 flex items-end p-4">
-                    <p class="text-white text-[11px] italic font-medium">आपका एक क्लिक किसी भूखे बच्चे की मुस्कान बन सकता है। ❤️</p>
+            <!-- Notice Update -->
+            <div class="space-y-4">
+                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-2">महत्वपूर्ण सूचना (Notice)</label>
+                <textarea id="noticeIn" class="w-full bg-gray-50 p-5 rounded-3xl outline-none font-bold text-sm" rows="3"></textarea>
+                <div class="flex items-center justify-between px-4 py-2 bg-orange-50 rounded-2xl">
+                    <span class="text-xs font-black text-orange-700">Live on Home Page?</span>
+                    <input id="noticeStatus" type="checkbox" class="w-6 h-6 accent-orange-500">
                 </div>
             </div>
-        </div>
 
-        <!-- Action Buttons -->
-        <div class="px-5 space-y-4">
-            <button onclick="watchAdAction()" class="w-full bg-red-500 text-white font-black py-6 rounded-[25px] shadow-xl text-xl flex flex-col items-center animate__animated animate__pulse animate__infinite">
-                <span>📽️ Ad देखकर मदद करें</span>
-                <span class="text-[9px] font-normal uppercase mt-1">+10 Points / Click</span>
-            </button>
-
-            <button onclick="shareApp()" class="w-full bg-green-600 text-white font-black py-4 rounded-[25px] shadow-lg flex items-center justify-center space-x-3 text-sm">
-                <span>📤 मिशन को शेयर करें</span>
-                <span class="bg-white/20 px-2 py-0.5 rounded-full text-[10px]">+20 Points</span>
-            </button>
-        </div>
-
-        <!-- Adsterra Native Banner -->
-        <div class="px-5 mt-8 mb-10">
-            <div class="bg-gray-50 p-2 rounded-2xl border border-dashed border-gray-300">
-                <p class="text-[9px] text-center text-gray-400 mb-2 uppercase">Sponsor Ad</p>
-                <script async="async" data-cfasync="false" src="https://pl28927536.profitablecpmratenetwork.com/48143ee0c3489a8ea92fae88c7feceea/invoke.js"></script>
-                <div id="container-48143ee0c3489a8ea92fae88c7feceea"></div>
-            </div>
+            <button onclick="updateData()" class="w-full bg-orange-500 text-white font-black py-5 rounded-[30px] shadow-xl hover:bg-orange-600 uppercase tracking-widest transition-all">Update Mission Dashboard</button>
         </div>
     </div>
 
-    <!-- TAB 2: LEADERBOARD -->
-    <div id="leaderboardTab" class="tab-content p-6 animate__animated animate__fadeIn">
-        <h2 class="text-2xl font-black mb-6">टॉप मददगार (Heroes) 🏆</h2>
-        <div id="leaderboardList" class="space-y-4"></div>
-    </div>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCatl9XQlXXxAedYUxhuuhGvlPCQRHPSZU",
+            authDomain: "help-e3df0.firebaseapp.com",
+            databaseURL: "https://help-e3df0-default-rtdb.firebaseio.com",
+            projectId: "help-e3df0",
+            storageBucket: "help-e3df0.firebasestorage.app",
+            messagingSenderId: "946692527261",
+            appId: "1:946692527261:web:a9d92261d0b589bb587074"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-    <!-- TAB 3: PROFILE -->
-    <div id="profileTab" class="tab-content p-8 animate__animated animate__fadeIn text-center">
-        <img id="profileImg" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="w-24 h-24 rounded-full mx-auto border-4 border-orange-500 p-1 shadow-xl">
-        <h3 id="pName" class="text-xl font-bold mt-4">User Name</h3>
-        <p id="pAddress" class="text-gray-500 text-xs italic">Location not set</p>
-        
-        <div class="grid grid-cols-2 gap-4 mt-8">
-            <div class="bg-orange-50 p-5 rounded-3xl border border-orange-100">
-                <p id="pPoints" class="text-3xl font-black text-orange-600">0</p>
-                <p class="text-[9px] font-bold text-gray-400 uppercase">My Points</p>
-            </div>
-            <div class="bg-blue-50 p-5 rounded-3xl border border-blue-100">
-                <p id="pRank" class="text-3xl font-black text-blue-600">#--</p>
-                <p class="text-[9px] font-bold text-gray-400 uppercase">My Rank</p>
-            </div>
-        </div>
+        // Basic Security
+        const pin = prompt("Admin Security PIN:");
+        if(pin !== "1234") { document.body.innerHTML = "<h1 style='text-align:center; margin-top:100px;'>Access Denied</h1>"; }
 
-        <button onclick="toggleAuth()" id="loginBtn" class="mt-10 w-full bg-gray-900 text-white font-bold py-4 rounded-2xl text-xs tracking-widest uppercase shadow-lg">Login / Logout</button>
-    </div>
-
-    <!-- Bottom Nav -->
-    <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t p-3 flex justify-around z-50">
-        <button onclick="switchTab('home')" class="nav-item flex flex-col items-center nav-active">
-            <span class="text-xl">🏠</span><span class="text-[10px] font-black uppercase">Home</span>
-        </button>
-        <button onclick="switchTab('leaderboard')" class="nav-item flex flex-col items-center text-gray-300">
-            <span class="text-xl">🏆</span><span class="text-[10px] font-black uppercase">Ranking</span>
-        </button>
-        <button onclick="switchTab('profile')" class="nav-item flex flex-col items-center text-gray-300">
-            <span class="text-xl">👤</span><span class="text-[10px] font-black uppercase">Profile</span>
-        </button>
-    </nav>
-</div>
-
-<!-- MANDATORY Setup Modal -->
-<div id="setupModal" class="hidden fixed inset-0 bg-black/95 z-[100] flex items-center justify-center p-6">
-    <div class="bg-white rounded-[40px] p-10 w-full max-w-sm text-center">
-        <h2 class="text-2xl font-black mb-6">प्रोफाइल सेटअप 🇮🇳</h2>
-        <div class="space-y-4">
-            <input id="nameInput" type="text" placeholder="आपका असली नाम" class="w-full bg-gray-100 p-4 rounded-2xl outline-none font-bold text-sm">
-            <input id="cityInput" type="text" placeholder="शहर, राज्य" class="w-full bg-gray-100 p-4 rounded-2xl outline-none font-bold text-sm">
-        </div>
-        <button onclick="saveIdentity()" class="w-full bg-orange-500 text-white font-black py-4 rounded-2xl mt-8 shadow-xl">मिशन शुरू करें</button>
-    </div>
-</div>
-
-<script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyCatl9XQlXXxAedYUxhuuhGvlPCQRHPSZU",
-        authDomain: "help-e3df0.firebaseapp.com",
-        databaseURL: "https://help-e3df0-default-rtdb.firebaseio.com",
-        projectId: "help-e3df0",
-        storageBucket: "help-e3df0.firebasestorage.app",
-        messagingSenderId: "946692527261",
-        appId: "1:946692527261:web:a9d92261d0b589bb587074"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const auth = firebase.auth();
-    const provider = new firebase.auth.GoogleAuthProvider();
-
-    let myData = null;
-
-    // 1. Auth & Identity
-    function toggleAuth() {
-        if (!auth.currentUser) auth.signInWithPopup(provider);
-        else if(confirm("लॉगआउट?")) auth.signOut().then(() => location.reload());
-    }
-
-    auth.onAuthStateChanged(user => {
-        if (user) {
-            db.ref('users/' + user.uid).on('value', s => {
-                myData = s.val() || {};
-                updateUI(user, myData);
-                if (!myData.realName) document.getElementById('setupModal').classList.remove('hidden');
-            });
-        }
-    });
-
-    function saveIdentity() {
-        const n = document.getElementById('nameInput').value.trim();
-        const c = document.getElementById('cityInput').value.trim();
-        if (n.length < 3 || c.length < 3) return alert("सही जानकारी दें ❤️");
-        db.ref('users/' + auth.currentUser.uid).update({
-            realName: n, address: c, photo: auth.currentUser.photoURL, points: myData.points || 0
-        }).then(() => document.getElementById('setupModal').classList.add('hidden'));
-    }
-
-    // 2. Fund & Notice Data (Admin Controlled)
-    db.ref('stats').on('value', s => {
-        const data = s.val() || {};
-        document.getElementById('totalFundDisplay').innerText = `₹ ${data.total || 0}`;
-        
-        // Handle Notice
-        const noticeBox = document.getElementById('noticeContainer');
-        if (data.notice_visible === true) {
-            noticeBox.classList.remove('hidden');
-            document.getElementById('noticeText').innerText = data.notice_text || "";
-        } else {
-            noticeBox.classList.add('hidden');
-        }
-    });
-
-    // 3. Watch Ad (ONLY Adds Points)
-    function watchAdAction() {
-        if (!auth.currentUser) return alert("कृपया लॉगिन करें ❤️");
-        if (!myData.realName) return;
-
-        db.ref('users/' + auth.currentUser.uid + '/points').transaction(p => (p || 0) + 10);
-        confetti({ particleCount: 100, spread: 70, origin: { y: 0.8 }, colors: ['#FF9933', '#FFFFFF', '#138808'] });
-    }
-
-    // 4. UI Functions
-    function updateUI(user, data) {
-        document.getElementById('userName').innerText = "नमस्ते, " + (data.realName || "दोस्त");
-        document.getElementById('userImg').src = user.photoURL;
-        document.getElementById('pName').innerText = data.realName || user.displayName;
-        document.getElementById('profileImg').src = user.photoURL;
-        document.getElementById('topPoints').innerText = data.points || 0;
-        document.getElementById('pPoints').innerText = data.points || 0;
-        document.getElementById('pAddress').innerText = "📍 " + (data.address || "Unknown");
-        calcRank(user.uid);
-    }
-
-    function calcRank(uid) {
-        db.ref('users').once('value', s => {
-            let uArr = [];
-            s.forEach(c => { uArr.push({id: c.key, pts: c.val().points || 0}) });
-            uArr.sort((a,b) => b.pts - a.pts);
-            const r = uArr.findIndex(u => u.id === uid) + 1;
-            document.getElementById('userRankInfo').innerText = "Ranking: #" + r;
-            document.getElementById('pRank').innerText = "#" + r;
+        // Fetch Stats
+        db.ref('stats').once('value', s => {
+            const d = s.val() || {};
+            document.getElementById('fundVal').value = d.total || 0;
+            document.getElementById('noticeIn').value = d.notice_text || "";
+            document.getElementById('noticeStatus').checked = d.notice_visible || false;
         });
-    }
 
-    function switchTab(tab) {
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('nav-active', 'text-orange-500'));
-        document.getElementById(tab + 'Tab').classList.add('active');
-        event.currentTarget.classList.add('nav-active', 'text-orange-500');
-        if(tab === 'leaderboard') loadLeaderboard();
-    }
-
-    function loadLeaderboard() {
-        db.ref('users').orderByChild('points').limitToLast(30).on('value', s => {
-            const list = document.getElementById('leaderboardList');
-            list.innerHTML = '';
-            let arr = [];
-            s.forEach(c => arr.push(c.val()));
-            arr.reverse().forEach((u, i) => {
-                list.innerHTML += `<div class="flex items-center bg-white border border-gray-100 p-4 rounded-[25px] shadow-sm">
-                    <span class="w-8 font-black text-gray-300">${i+1}</span>
-                    <img src="${u.photo}" class="w-12 h-12 rounded-full border-2 border-orange-200">
-                    <div class="ml-4 flex-1">
-                        <h4 class="font-black text-gray-800 text-xs uppercase">${u.realName}</h4>
-                        <p class="text-[9px] text-gray-400 font-bold tracking-tighter uppercase italic">📍 ${u.address}</p>
-                    </div>
-                    <p class="text-lg font-black text-orange-600">${u.points || 0}</p>
-                </div>`;
-            });
-        });
-    }
-
-    function shareApp() {
-        if(auth.currentUser) db.ref('users/' + auth.currentUser.uid + '/points').transaction(p => (p || 0) + 20);
-        const txt = `मैं इस ऐप पर गरीबों की मदद के लिए पॉइंट्स कमा रहा हूँ! क्या आप मेरा साथ देंगे? ❤️\nजुड़ें: ${window.location.href}`;
-        window.open(`https://wa.me/?text=${encodeURIComponent(txt)}`);
-    }
-</script>
+        function updateData() {
+            db.ref('stats').update({
+                total: parseFloat(document.getElementById('fundVal').value),
+                notice_text: document.getElementById('noticeIn').value,
+                notice_visible: document.getElementById('noticeStatus').checked
+            }).then(() => alert("Mission Dashboard Updated Successfully! ❤️"));
+        }
+    </script>
 </body>
 </html>
