@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - मदद का हाथ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
+</head>
+<body class="bg-gray-100 p-5">
+    <div class="max-w-md mx-auto bg-white p-8 rounded-3xl shadow-lg">
+        <h1 class="text-2xl font-bold mb-6">Admin Control Panel</h1>
+        
+        <!-- Update Stats -->
+        <div class="space-y-4 mb-8">
+            <h2 class="font-bold text-orange-600">📊 कमाई अपडेट करें</h2>
+            <input id="newTotal" type="number" placeholder="कुल कमाई (Total)" class="w-full p-3 border rounded-xl">
+            <input id="newToday" type="number" placeholder="आज की कमाई (Today)" class="w-full p-3 border rounded-xl">
+            <textarea id="newNotif" placeholder="नोटिफिकेशन मैसेज..." class="w-full p-3 border rounded-xl"></textarea>
+            <button onclick="updateStats()" class="w-full bg-orange-500 text-white py-3 rounded-xl font-bold">Update Stats</button>
+        </div>
+
+        <hr class="my-8">
+
+        <!-- Add History -->
+        <div class="space-y-4">
+            <h2 class="font-bold text-green-600">📜 मदद की हिस्ट्री जोड़ें</h2>
+            <input id="hAmount" type="number" placeholder="कितनी राशि (₹)" class="w-full p-3 border rounded-xl">
+            <input id="hTitle" type="text" placeholder="किसके लिए? (उदा: राशन)" class="w-full p-3 border rounded-xl">
+            <input id="hIcon" type="text" placeholder="Emoji (उदा: 🍎)" class="w-full p-3 border rounded-xl">
+            <button onclick="addHistory()" class="w-full bg-green-600 text-white py-3 rounded-xl font-bold">Add to History</button>
+        </div>
+    </div>
+
+    <script>
+        // Same Firebase Config here
+        const firebaseConfig = { ... }; 
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        function updateStats() {
+            db.ref('stats').update({
+                total: parseFloat(document.getElementById('newTotal').value),
+                today: parseFloat(document.getElementById('newToday').value),
+                notification: document.getElementById('newNotif').value
+            }).then(() => alert("Stats Updated!"));
+        }
+
+        function addHistory() {
+            const date = new Date().toLocaleDateString('hi-IN', { day:'numeric', month:'long', year:'numeric' });
+            db.ref('history').push({
+                amount: document.getElementById('hAmount').value,
+                title: document.getElementById('hTitle').value,
+                icon: document.getElementById('hIcon').value,
+                date: date
+            }).then(() => alert("History Added!"));
+        }
+    </script>
+</body>
+</html>
