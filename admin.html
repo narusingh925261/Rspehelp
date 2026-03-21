@@ -2,66 +2,71 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <title>Admin - मदद का हाथ</title>
+    <title>Admin - Mission Control</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
 </head>
-<body class="bg-gray-100 p-5">
-    <div class="max-w-md mx-auto bg-white p-8 rounded-3xl shadow-lg">
-        <h1 class="text-2xl font-bold mb-6">Admin Control Panel</h1>
+<body class="bg-gray-900 p-5 flex items-center justify-center min-h-screen font-sans">
+
+    <div id="adminUI" class="bg-white rounded-[40px] p-10 w-full max-w-md shadow-2xl">
+        <h1 class="text-3xl font-black text-center mb-8 text-gray-800 italic">ADMIN PANEL ⚙️</h1>
         
-        <!-- Update Stats -->
-        <div class="space-y-4 mb-8">
-            <h2 class="font-bold text-orange-600">📊 कमाई अपडेट करें</h2>
-            <input id="newTotal" type="number" placeholder="कुल कमाई (Total)" class="w-full p-3 border rounded-xl">
-            <input id="newToday" type="number" placeholder="आज की कमाई (Today)" class="w-full p-3 border rounded-xl">
-            <textarea id="newNotif" placeholder="नोटिफिकेशन मैसेज..." class="w-full p-3 border rounded-xl"></textarea>
-            <button onclick="updateStats()" class="w-full bg-orange-500 text-white py-3 rounded-xl font-bold">Update Stats</button>
-        </div>
+        <div class="space-y-6">
+            <!-- Fund Update -->
+            <div>
+                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">कुल एकत्रित फंड (₹)</label>
+                <input id="fundVal" type="number" placeholder="जैसे: 5000" class="w-full bg-gray-100 p-4 rounded-2xl border-none outline-none focus:ring-2 ring-orange-400 font-black text-xl text-orange-600">
+            </div>
 
-        <hr class="my-8">
+            <hr>
 
-        <!-- Add History -->
-        <div class="space-y-4">
-            <h2 class="font-bold text-green-600">📜 मदद की हिस्ट्री जोड़ें</h2>
-            <input id="hAmount" type="number" placeholder="कितनी राशि (₹)" class="w-full p-3 border rounded-xl">
-            <input id="hTitle" type="text" placeholder="किसके लिए? (उदा: राशन)" class="w-full p-3 border rounded-xl">
-            <input id="hIcon" type="text" placeholder="Emoji (उदा: 🍎)" class="w-full p-3 border rounded-xl">
-            <button onclick="addHistory()" class="w-full bg-green-600 text-white py-3 rounded-xl font-bold">Add to History</button>
+            <!-- Notice Board -->
+            <div class="space-y-3">
+                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">महत्वपूर्ण सूचना (Mahatvpurn Suchna)</label>
+                <textarea id="noticeTextIn" placeholder="यहाँ सूचना लिखें..." class="w-full bg-gray-100 p-4 rounded-2xl outline-none font-bold text-sm" rows="3"></textarea>
+                
+                <div class="flex items-center justify-between p-4 bg-orange-50 rounded-2xl">
+                    <span class="text-xs font-bold text-orange-700">होम पेज पर दिखाएं?</span>
+                    <input id="noticeToggle" type="checkbox" class="w-6 h-6 accent-orange-500">
+                </div>
+            </div>
+
+            <button onclick="updateMaster()" class="w-full bg-orange-500 text-white font-black py-5 rounded-[25px] shadow-xl hover:bg-orange-600 active:scale-95 transition-all uppercase tracking-widest">डेटा अपडेट करें</button>
         </div>
     </div>
 
     <script>
-        // Same Firebase Config here
         const firebaseConfig = {
-        apiKey: "AIzaSyCatl9XQlXXxAedYUxhuuhGvlPCQRHPSZU",
-        authDomain: "help-e3df0.firebaseapp.com",
-        databaseURL: "https://help-e3df0-default-rtdb.firebaseio.com",
-        projectId: "help-e3df0",
-        storageBucket: "help-e3df0.firebasestorage.app",
-        messagingSenderId: "946692527261",
-        appId: "1:946692527261:web:a9d92261d0b589bb587074"
-    };
+            apiKey: "AIzaSyCatl9XQlXXxAedYUxhuuhGvlPCQRHPSZU",
+            authDomain: "help-e3df0.firebaseapp.com",
+            databaseURL: "https://help-e3df0-default-rtdb.firebaseio.com",
+            projectId: "help-e3df0",
+            storageBucket: "help-e3df0.firebasestorage.app",
+            messagingSenderId: "946692527261",
+            appId: "1:946692527261:web:a9d92261d0b589bb587074"
+        };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        function updateStats() {
-            db.ref('stats').update({
-                total: parseFloat(document.getElementById('newTotal').value),
-                today: parseFloat(document.getElementById('newToday').value),
-                notification: document.getElementById('newNotif').value
-            }).then(() => alert("Stats Updated!"));
-        }
+        // Simple Security
+        const pin = prompt("Admin PIN:");
+        if(pin !== "1234") { document.body.innerHTML = "Access Denied"; }
 
-        function addHistory() {
-            const date = new Date().toLocaleDateString('hi-IN', { day:'numeric', month:'long', year:'numeric' });
-            db.ref('history').push({
-                amount: document.getElementById('hAmount').value,
-                title: document.getElementById('hTitle').value,
-                icon: document.getElementById('hIcon').value,
-                date: date
-            }).then(() => alert("History Added!"));
+        // Fetch Current Stats
+        db.ref('stats').once('value', s => {
+            const d = s.val() || {};
+            document.getElementById('fundVal').value = d.total || 0;
+            document.getElementById('noticeTextIn').value = d.notice_text || "";
+            document.getElementById('noticeToggle').checked = d.notice_visible || false;
+        });
+
+        function updateMaster() {
+            db.ref('stats').update({
+                total: parseFloat(document.getElementById('fundVal').value),
+                notice_text: document.getElementById('noticeTextIn').value,
+                notice_visible: document.getElementById('noticeToggle').checked
+            }).then(() => alert("वेबसाइट अपडेट हो गई है! ❤️"));
         }
     </script>
 </body>
