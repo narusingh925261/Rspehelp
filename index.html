@@ -3,122 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>मदद का हाथ - सबका साथ</title>
+    <title>मदद का हाथ - मिशन 2024</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
-    <!-- 1. Adsterra Popunder Code -->
+    <!-- Adsterra Scripts -->
     <script src="https://pl28926111.profitablecpmratenetwork.com/12/15/fb/1215fb57c30c4cef7e5d7329a5f9cc53.js"></script>
-
-    <!-- 2. Adsterra Social Bar Code -->
     <script src="https://pl28927780.profitablecpmratenetwork.com/a7/6e/b4/a76eb4e64e7550bb4bf787ad5dbaa0b4.js"></script>
 
     <style>
-        body { background-color: #f8fafc; font-family: sans-serif; -webkit-tap-highlight-color: transparent; }
-        .mobile-frame { max-width: 480px; margin: 0 auto; background: white; min-height: 100vh; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
-        .marquee-box { background: #fff7ed; overflow: hidden; white-space: nowrap; padding: 10px 0; border-bottom: 2px solid #fb923c; }
-        .marquee-text { display: inline-block; animation: scroll 15s linear infinite; font-weight: bold; color: #c2410c; }
-        @keyframes scroll { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-        .orange-grad { background: linear-gradient(135deg, #ff9933 0%, #ff6b6b 100%); }
+        body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .mobile-frame { max-width: 480px; margin: 0 auto; background: white; min-height: 100vh; position: relative; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .orange-grad { background: linear-gradient(135deg, #FF9933 0%, #FF5722 100%); }
+        .nav-active { color: #f97316 !important; border-top: 2px solid #f97316; }
+        input::placeholder { font-weight: 400; opacity: 0.6; }
     </style>
 </head>
 <body>
 
-<div class="mobile-frame pb-24">
-    <!-- Top Stats Section -->
-    <div class="orange-grad text-white p-8 rounded-b-[50px] text-center shadow-2xl animate__animated animate__fadeIn">
-        <h1 class="text-lg font-bold opacity-90 tracking-wide uppercase">मदद का हाथ ❤️</h1>
-        <div id="totalEarnings" class="text-5xl font-black mt-3 mb-2">₹ 0.00</div>
-        <p class="text-xs opacity-80 uppercase tracking-widest">कुल दान की गई राशि</p>
-        <div class="mt-5 bg-white/20 inline-flex items-center space-x-2 px-6 py-2 rounded-full text-sm font-bold backdrop-blur-sm">
-            <span>आज का लक्ष्य:</span>
-            <span id="todayEarnings">₹ 0.00</span>
+<div class="mobile-frame pb-24 shadow-2xl">
+    
+    <!-- Top Nav: User Status -->
+    <div class="p-4 flex justify-between items-center bg-white border-b sticky top-0 z-50">
+        <div class="flex items-center space-x-3" onclick="switchTab('profile')">
+            <img id="userImg" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="w-10 h-10 rounded-full border-2 border-orange-500 p-0.5">
+            <div>
+                <p id="userName" class="text-xs font-black text-gray-800 tracking-tight">नमस्ते, मेहमान</p>
+                <p id="userRankInfo" class="text-[9px] text-orange-600 font-bold uppercase">Rank: #--</p>
+            </div>
+        </div>
+        <div class="bg-orange-50 px-4 py-1 rounded-2xl border border-orange-100 text-right">
+            <p id="topPoints" class="text-xl font-black text-orange-600 leading-none">0</p>
+            <p class="text-[8px] font-bold text-gray-400 uppercase tracking-tighter">Support Points</p>
         </div>
     </div>
 
-    <!-- Notification -->
-    <div class="marquee-box">
-        <div id="notifText" class="marquee-text italic">लोड हो रहा है... हर क्लिक से किसी की भूख मिट सकती है ❤️</div>
-    </div>
+    <!-- TAB 1: HOME (Mission Dashboard) -->
+    <div id="homeTab" class="tab-content active animate__animated animate__fadeIn">
+        <div class="orange-grad text-white p-10 rounded-b-[60px] text-center shadow-xl">
+            <p class="text-[10px] font-bold uppercase tracking-[0.2em] mb-2 opacity-90">कुल एकत्रित फंड ❤️</p>
+            <h1 id="totalEarnings" class="text-5xl font-black italic">₹ 0.00</h1>
+            <div class="mt-6 inline-flex items-center bg-white/20 px-4 py-1 rounded-full backdrop-blur-md">
+                <span class="w-2 h-2 bg-green-400 rounded-full animate-ping mr-2"></span>
+                <span class="text-[10px] font-bold">LIVE MISSION PROGRESS</span>
+            </div>
+        </div>
 
-    <!-- Emotional Section -->
-    <div class="p-5">
-        <div class="relative h-48 rounded-3xl overflow-hidden shadow-xl border-4 border-white transform transition-transform hover:scale-[1.02]">
-            <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=600" class="w-full h-full object-cover">
-            <div class="absolute bottom-0 w-full bg-gradient-to-t from-black/80 p-4">
-                <p class="text-white text-xs font-medium leading-relaxed italic">"यह ऐप आपके बिना कुछ भी नहीं है... आपका एक क्लिक किसी की भूख मिटा सकता है 🍞❤️"</p>
+        <div class="p-6 space-y-6">
+            <!-- Main Button -->
+            <button onclick="watchAdAction()" class="w-full bg-red-500 hover:bg-red-600 active:scale-95 transition-all text-white font-black py-7 rounded-[30px] shadow-[0_15px_30px_rgba(239,68,68,0.4)] text-2xl flex flex-col items-center animate__animated animate__pulse animate__infinite">
+                <span>▶️ Ad देखकर मदद करें</span>
+                <span class="text-[10px] font-normal mt-1 tracking-widest opacity-90">+10 Points / Click</span>
+            </button>
+
+            <!-- Adsterra Native Ad -->
+            <div class="bg-gray-50 p-4 rounded-3xl border border-gray-100 shadow-inner">
+                <p class="text-[9px] font-bold text-center text-gray-400 mb-3 tracking-widest uppercase italic">प्रायोजित संदेश (Sponsored)</p>
+                <script async="async" data-cfasync="false" src="https://pl28927536.profitablecpmratenetwork.com/48143ee0c3489a8ea92fae88c7feceea/invoke.js"></script>
+                <div id="container-48143ee0c3489a8ea92fae88c7feceea"></div>
             </div>
         </div>
     </div>
 
-    <!-- Watch Ad Section -->
-    <div class="px-5 space-y-4">
-        <!-- 3. Adsterra Native Banner Code (Shown before Action) -->
-        <div class="bg-gray-50 p-2 rounded-xl border border-dashed border-gray-300">
-            <p class="text-[10px] text-center text-gray-400 mb-1">Sponsored</p>
-            <script async="async" data-cfasync="false" src="https://pl28927536.profitablecpmratenetwork.com/48143ee0c3489a8ea92fae88c7feceea/invoke.js"></script>
-            <div id="container-48143ee0c3489a8ea92fae88c7feceea"></div>
+    <!-- TAB 2: LEADERBOARD (Top Supporters) -->
+    <div id="leaderboardTab" class="tab-content p-6 animate__animated animate__fadeIn">
+        <div class="flex flex-col mb-8">
+            <h2 class="text-3xl font-black text-gray-800">रियल हीरोज 🏆</h2>
+            <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">टॉप मददगारों की सूची</p>
         </div>
+        <div id="leaderboardList" class="space-y-4">
+            <!-- Data from Firebase -->
+        </div>
+    </div>
 
-        <button onclick="handleWatchAd()" class="w-full bg-red-500 hover:bg-red-600 active:scale-95 transition-all text-white font-black py-5 rounded-2xl shadow-xl flex flex-col items-center justify-center animate__animated animate__pulse animate__infinite">
-            <span class="text-xl">▶️ Ad देखकर मदद करें</span>
-            <span class="text-[10px] opacity-80">सिर्फ 5 सेकंड का समय दें</span>
+    <!-- TAB 3: PROFILE & STATS -->
+    <div id="profileTab" class="tab-content p-8 animate__animated animate__fadeIn">
+        <div class="bg-white rounded-[40px] p-8 border border-gray-100 shadow-xl text-center">
+            <img id="profileImg" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="w-28 h-28 rounded-full mx-auto border-4 border-orange-500 p-1 mb-4">
+            <h3 id="pName" class="text-2xl font-black text-gray-800">आपका नाम यहाँ</h3>
+            <p id="pAddress" class="text-sm text-gray-500 italic mt-1 font-medium">स्थान दर्ज नहीं है</p>
+            
+            <div class="grid grid-cols-2 gap-4 mt-8">
+                <div class="bg-orange-50 p-4 rounded-3xl">
+                    <p id="pPoints" class="text-3xl font-black text-orange-500 leading-none">0</p>
+                    <p class="text-[9px] font-bold text-gray-400 uppercase mt-2">Points</p>
+                </div>
+                <div class="bg-blue-50 p-4 rounded-3xl">
+                    <p id="pRank" class="text-3xl font-black text-blue-600 leading-none">#--</p>
+                    <p class="text-[9px] font-bold text-gray-400 uppercase mt-2">Rank</p>
+                </div>
+            </div>
+
+            <button onclick="toggleAuth()" id="loginBtn" class="mt-8 w-full bg-gray-900 text-white font-bold py-4 rounded-2xl text-xs uppercase tracking-widest shadow-lg active:scale-95 transition-all">Login / Logout</button>
+        </div>
+        
+        <button onclick="shareApp()" class="w-full mt-6 bg-green-600 text-white font-black py-5 rounded-[25px] shadow-xl flex items-center justify-center space-x-3">
+            <span class="text-xl">📤</span>
+            <span>दोस्तों को चुनौती दें</span>
         </button>
-
-        <div class="grid grid-cols-2 gap-4">
-            <button onclick="shareOnWhatsApp()" class="bg-green-600 text-white p-4 rounded-2xl font-bold shadow-lg flex flex-col items-center">
-                <span>📤 शेयर करें</span>
-                <span class="text-[10px] opacity-70 mt-1">+10 Points</span>
-            </button>
-            <button class="bg-blue-500 text-white p-4 rounded-2xl font-bold shadow-lg flex flex-col items-center">
-                <span>🔄 रोजाना मदद</span>
-                <span id="streak" class="text-[10px] opacity-70 mt-1">Day: 1</span>
-            </button>
-        </div>
     </div>
 
-    <!-- Adsterra Banner (468x60) Middle -->
-    <div class="flex justify-center my-6">
-        <script type="text/javascript">
-            atOptions = { 'key' : '5ef61b9ce5db99a105f2eab3538cf716', 'format' : 'iframe', 'height' : 60, 'width' : 468, 'params' : {} };
-        </script>
-        <script type="text/javascript" src="https://www.highperformanceformat.com/5ef61b9ce5db99a105f2eab3538cf716/invoke.js"></script>
-    </div>
-
-    <!-- History -->
-    <div class="p-6">
-        <h3 class="font-bold text-gray-800 mb-4 flex items-center text-lg">
-            <span class="mr-2">📜</span> हाल ही में की गई मदद
-        </h3>
-        <div id="historyContainer" class="space-y-4">
-            <!-- Dynamic items -->
-        </div>
-    </div>
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t p-3 flex justify-around z-50 shadow-2xl">
+        <button onclick="switchTab('home')" class="nav-item px-4 py-1 flex flex-col items-center nav-active">
+            <span class="text-xl">🏠</span><span class="text-[10px] font-bold uppercase tracking-tighter">Home</span>
+        </button>
+        <button onclick="switchTab('leaderboard')" class="nav-item px-4 py-1 flex flex-col items-center text-gray-400">
+            <span class="text-xl">🏆</span><span class="text-[10px] font-bold uppercase tracking-tighter">Heroes</span>
+        </button>
+        <button onclick="switchTab('profile')" class="nav-item px-4 py-1 flex flex-col items-center text-gray-400">
+            <span class="text-xl">👤</span><span class="text-[10px] font-bold uppercase tracking-tighter">Profile</span>
+        </button>
+    </nav>
 </div>
 
-<!-- Bottom Navigation -->
-<nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t border-gray-100 p-4 flex justify-around shadow-[0_-10px_20px_rgba(0,0,0,0.05)] z-50">
-    <button class="flex flex-col items-center text-orange-500"><span class="text-xl">🏠</span><span class="text-[10px] font-bold uppercase">Home</span></button>
-    <button class="flex flex-col items-center text-gray-300"><span class="text-xl">📊</span><span class="text-[10px] font-bold uppercase">History</span></button>
-    <button class="flex flex-col items-center text-gray-300"><span class="text-xl">🏆</span><span class="text-[10px] font-bold uppercase">Top 10</span></button>
-</nav>
+<!-- 📍 Profile Setup Modal (MANDATORY) -->
+<div id="addressModal" class="hidden fixed inset-0 bg-black/95 z-[100] flex items-center justify-center p-6 backdrop-blur-sm">
+    <div class="bg-white rounded-[50px] p-10 w-full max-w-sm text-center animate__animated animate__zoomIn">
+        <div class="text-6xl mb-6">🇮🇳</div>
+        <h2 class="text-2xl font-black text-gray-800">प्रोफाइल पूरी करें</h2>
+        <p class="text-[10px] text-orange-500 font-bold uppercase mt-2 mb-8 tracking-widest leading-relaxed">लीडरबोर्ड में जुड़ने के लिए अपनी सही जानकारी दें</p>
+        
+        <div class="space-y-4">
+            <input id="nameInput" type="text" placeholder="आपका असली नाम (Real Name)" class="w-full bg-gray-50 p-5 rounded-2xl border-2 border-gray-100 outline-none focus:border-orange-400 font-bold text-gray-800 text-sm">
+            <input id="cityInput" type="text" placeholder="शहर, राज्य (City, State)" class="w-full bg-gray-50 p-5 rounded-2xl border-2 border-gray-100 outline-none focus:border-orange-400 font-bold text-gray-800 text-sm">
+        </div>
 
-<!-- Reward Popup -->
-<div id="popup" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center p-8 z-[100]">
-    <div class="bg-white rounded-[40px] p-8 text-center animate__animated animate__zoomIn">
-        <div class="text-6xl mb-4">😇</div>
-        <h2 class="text-2xl font-bold text-gray-800">बहुत-बहुत धन्यवाद!</h2>
-        <p class="text-gray-600 mt-2 font-medium leading-relaxed">आपकी वजह से जरूरतमंदों के लिए <span class="text-green-600 font-bold">₹0.50</span> जमा हुए। ❤️</p>
-        <button onclick="closePopup()" class="mt-6 bg-orange-500 text-white w-full py-4 rounded-2xl font-bold shadow-lg active:scale-95 transition-all">मदद जारी रखें</button>
+        <button onclick="saveUserIdentity()" class="w-full bg-orange-500 text-white font-black py-5 rounded-[25px] mt-8 shadow-2xl transform active:scale-95 transition-all text-sm uppercase tracking-widest">मिशन में शामिल हों</button>
     </div>
 </div>
 
 <script>
-    // Firebase Initialization
+    // Firebase Setup
     const firebaseConfig = {
         apiKey: "AIzaSyCatl9XQlXXxAedYUxhuuhGvlPCQRHPSZU",
         authDomain: "help-e3df0.firebaseapp.com",
@@ -130,54 +152,152 @@
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
+    const auth = firebase.auth();
+    const provider = new firebase.auth.GoogleAuthProvider();
 
-    // Data Load
-    db.ref('stats').on('value', (s) => {
-        const val = s.val() || { total: 0, today: 0, notification: "नमस्ते! मिशन से जुड़ने के लिए धन्यवाद।" };
-        document.getElementById('totalEarnings').innerText = `₹ ${val.total.toFixed(2)}`;
-        document.getElementById('todayEarnings').innerText = `₹ ${val.today.toFixed(2)}`;
-        document.getElementById('notifText').innerText = val.notification;
+    let userDBData = null;
+
+    // Authentication Logic
+    function toggleAuth() {
+        if (!auth.currentUser) {
+            auth.signInWithPopup(provider);
+        } else {
+            if(confirm("लॉगआउट करना चाहते हैं?")) {
+                auth.signOut().then(() => location.reload());
+            }
+        }
+    }
+
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            db.ref('users/' + user.uid).on('value', snapshot => {
+                userDBData = snapshot.val() || {};
+                updateUserUI(user, userDBData);
+                // If Name or Address is missing, show modal
+                if (!userDBData.realName || !userDBData.address) {
+                    document.getElementById('addressModal').classList.remove('hidden');
+                }
+            });
+        } else {
+            updateUserUI(null, null);
+        }
     });
 
-    db.ref('history').limitToLast(5).on('value', (s) => {
-        const cont = document.getElementById('historyContainer');
-        cont.innerHTML = '';
-        s.forEach((child) => {
-            const h = child.val();
-            cont.innerHTML = `
-                <div class="bg-gray-50 p-4 rounded-2xl flex items-center border border-gray-100 animate__animated animate__fadeInUp">
-                    <div class="bg-white shadow-sm p-3 rounded-xl text-xl mr-4">${h.icon}</div>
-                    <div>
-                        <p class="font-bold text-gray-800">₹ ${h.amount} - ${h.title}</p>
-                        <p class="text-[10px] text-gray-400 font-medium">${h.date}</p>
-                    </div>
-                </div>` + cont.innerHTML;
+    function saveUserIdentity() {
+        const rName = document.getElementById('nameInput').value.trim();
+        const rAddr = document.getElementById('cityInput').value.trim();
+
+        if (rName.length < 3 || rAddr.length < 3) {
+            return alert("कृपया अपना असली नाम और पता सही से लिखें! ❤️");
+        }
+
+        db.ref('users/' + auth.currentUser.uid).update({
+            realName: rName,
+            address: rAddr,
+            photo: auth.currentUser.photoURL,
+            points: userDBData.points || 0
+        }).then(() => {
+            document.getElementById('addressModal').classList.add('hidden');
+            alert("आपका स्वागत है " + rName + "! अब आप मिशन का हिस्सा हैं।");
         });
-    });
+    }
 
-    function handleWatchAd() {
-        // Popunder will trigger on click as well
-        // Update Firebase
-        db.ref('stats/total').transaction(c => (c || 0) + 0.50);
-        db.ref('stats/today').transaction(c => (c || 0) + 0.50);
+    function updateUserUI(user, data) {
+        if (user && data) {
+            document.getElementById('userName').innerText = "नमस्ते, " + (data.realName ? data.realName.split(' ')[0] : "दोस्त");
+            document.getElementById('userImg').src = user.photoURL;
+            document.getElementById('pName').innerText = data.realName || user.displayName;
+            document.getElementById('profileImg').src = user.photoURL;
+            document.getElementById('topPoints').innerText = data.points || 0;
+            document.getElementById('pPoints').innerText = data.points || 0;
+            document.getElementById('pAddress').innerText = "📍 " + (data.address || "सेट नहीं है");
+            calculateUserRank(user.uid);
+        } else {
+            document.getElementById('userName').innerText = "नमस्ते, मेहमान";
+            document.getElementById('userRankInfo').innerText = "Ranking: #--";
+        }
+    }
+
+    function calculateUserRank(uid) {
+        db.ref('users').once('value', s => {
+            let userList = [];
+            s.forEach(c => { userList.push({id: c.key, pts: c.val().points || 0}) });
+            userList.sort((a,b) => b.pts - a.pts);
+            const r = userList.findIndex(u => u.id === uid) + 1;
+            document.getElementById('userRankInfo').innerText = "Ranking: #" + r;
+            document.getElementById('pRank').innerText = "#" + r;
+        });
+    }
+
+    // Reward System (Watch Ad)
+    function watchAdAction() {
+        if (!auth.currentUser) return alert("पॉइंट्स कमाने के लिए कृपया लॉगिन करें ❤️");
+        if (!userDBData.realName) return document.getElementById('addressModal').classList.remove('hidden');
         
-        document.getElementById('popup').classList.remove('hidden');
+        // Firebase Transaction
+        db.ref('users/' + auth.currentUser.uid + '/points').transaction(p => (p || 0) + 10);
+        db.ref('stats/total').transaction(t => (t || 0) + 0.10); 
+
+        // Confetti Effect
         confetti({
             particleCount: 150,
-            spread: 70,
-            origin: { y: 0.7 },
+            spread: 80,
+            origin: { y: 0.8 },
             colors: ['#FF9933', '#ffffff', '#138808']
         });
     }
 
-    function closePopup() {
-        document.getElementById('popup').classList.add('hidden');
+    // Navigation & Tabs
+    function switchTab(tab) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('nav-active', 'text-orange-500'));
+        
+        document.getElementById(tab + 'Tab').classList.add('active');
+        event.currentTarget.classList.add('nav-active', 'text-orange-500');
+
+        if(tab === 'leaderboard') refreshLeaderboard();
     }
 
-    function shareOnWhatsApp() {
-        const text = "मैं बिना पैसे दिए सिर्फ Ads देखकर गरीबों की मदद कर रहा हूँ ❤️ आप भी जुड़ें 👇\n" + window.location.href;
-        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
+    function refreshLeaderboard() {
+        db.ref('users').orderByChild('points').limitToLast(50).on('value', s => {
+            const listContainer = document.getElementById('leaderboardList');
+            listContainer.innerHTML = '';
+            let sortedArr = [];
+            s.forEach(c => { sortedArr.push(c.val()) });
+            sortedArr.reverse().forEach((u, i) => {
+                const rankNum = i + 1;
+                let rankIcon = rankNum;
+                if(rankNum === 1) rankIcon = "🥇";
+                if(rankNum === 2) rankIcon = "🥈";
+                if(rankNum === 3) rankIcon = "🥉";
+
+                listContainer.innerHTML += `
+                    <div class="flex items-center bg-white border border-gray-100 p-5 rounded-[30px] shadow-sm animate__animated animate__fadeInUp" style="animation-delay: ${i*0.05}s">
+                        <span class="w-10 font-black text-gray-300 text-xl">${rankIcon}</span>
+                        <img src="${u.photo}" class="w-14 h-14 rounded-full border-2 border-orange-500 p-0.5">
+                        <div class="ml-4 flex-1">
+                            <h4 class="font-black text-gray-800 text-sm leading-tight uppercase">${u.realName}</h4>
+                            <p class="text-[10px] text-gray-400 mt-1 font-bold italic tracking-wider">📍 ${u.address}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-lg font-black text-orange-600">${u.points || 0}</p>
+                            <p class="text-[8px] font-bold text-gray-300 uppercase tracking-tighter">Support Points</p>
+                        </div>
+                    </div>`;
+            });
+        });
+    }
+
+    // Global Stats Sync
+    db.ref('stats/total').on('value', s => {
+        document.getElementById('totalEarnings').innerText = `₹ ${s.val().toFixed(2)}`;
+    });
+
+    function shareApp() {
+        const msg = `बिना पैसे खर्च किए सिर्फ एड्स देखकर मैं गरीबों की मदद कर रहा हूँ! मेरा रैंक #${document.getElementById('pRank').innerText} है। क्या आप मुझसे आगे निकल सकते हैं? ❤️\nजुड़ें: ${window.location.href}`;
+        window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`);
     }
 </script>
+
 </body>
 </html>
