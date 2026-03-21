@@ -2,49 +2,59 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <title>Admin - मिशन कंट्रोल</title>
+    <title>Admin Panel - Mission Help</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
 </head>
-<body class="bg-gray-100 p-4 min-h-screen font-sans">
+<body class="bg-slate-100 p-4 min-h-screen">
 
-    <div class="max-w-xl mx-auto space-y-6">
-        
-        <!-- Section 1: Fund & Notice -->
+    <div id="loginOverlay" class="fixed inset-0 bg-slate-900 z-[1000] flex items-center justify-center p-6">
+        <div class="bg-white p-10 rounded-[40px] w-full max-w-sm text-center shadow-2xl">
+            <h1 class="text-3xl font-black mb-6">🔒 Admin Login</h1>
+            <input id="pinIn" type="password" placeholder="Admin PIN" class="w-full bg-gray-100 p-5 rounded-3xl mb-4 text-center font-bold outline-none focus:ring-2 ring-orange-400">
+            <button onclick="checkPin()" class="w-full bg-orange-500 text-white font-black py-5 rounded-3xl shadow-lg">UNLOCK PANEL</button>
+        </div>
+    </div>
+
+    <div class="max-w-xl mx-auto space-y-8 pt-6 pb-20">
+        <!-- Fund & Notice -->
         <div class="bg-white rounded-[40px] p-8 shadow-xl border-4 border-orange-500">
-            <h2 class="text-2xl font-black text-orange-600 mb-6 uppercase italic">Mission Dashboard ⚙️</h2>
+            <h2 class="text-xl font-black mb-6">📊 Stats & Notice Control</h2>
             <div class="space-y-4">
-                <div>
-                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-2">कुल एकत्रित फंड (₹)</label>
-                    <input id="fundVal" type="number" class="w-full bg-gray-50 p-4 rounded-2xl outline-none font-black text-xl text-orange-600">
-                </div>
-                <div>
-                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-2">महत्वपूर्ण सूचना</label>
-                    <textarea id="noticeIn" class="w-full bg-gray-50 p-4 rounded-2xl outline-none font-bold text-sm" rows="2"></textarea>
-                </div>
+                <input id="fundIn" type="number" placeholder="Total Fund ₹" class="w-full bg-gray-50 p-4 rounded-2xl outline-none font-bold">
+                <textarea id="noticeIn" placeholder="Notice Board Text..." class="w-full bg-gray-50 p-4 rounded-2xl outline-none font-bold" rows="2"></textarea>
                 <div class="flex items-center justify-between p-4 bg-orange-50 rounded-2xl">
-                    <span class="text-xs font-black text-orange-700 uppercase">Live on Home?</span>
-                    <input id="noticeStatus" type="checkbox" class="w-6 h-6 accent-orange-500">
+                    <span class="text-xs font-bold uppercase">Show Notice?</span>
+                    <input id="noticeToggle" type="checkbox" class="w-6 h-6 accent-orange-500">
                 </div>
-                <button onclick="updateMaster()" class="w-full bg-orange-500 text-white font-black py-4 rounded-2xl shadow-lg hover:bg-orange-600 uppercase tracking-widest transition-all">Update Stats & Notice</button>
+                <button onclick="saveStats()" class="w-full bg-orange-500 text-white font-black py-4 rounded-2xl">Save Stats</button>
             </div>
         </div>
 
-        <!-- Section 2: Add New History (Donation Proof) -->
+        <!-- Add History -->
         <div class="bg-white rounded-[40px] p-8 shadow-xl border-4 border-green-500">
-            <h2 class="text-2xl font-black text-green-600 mb-6 uppercase italic">Add History Record 📜</h2>
+            <h2 class="text-xl font-black mb-6">📜 Add Donation History</h2>
             <div class="space-y-4">
                 <div class="grid grid-cols-2 gap-4">
-                    <input id="hAmount" type="number" placeholder="राशि (₹)" class="bg-gray-50 p-4 rounded-2xl font-bold outline-none">
-                    <input id="hDate" type="text" placeholder="तारीख (जैसे: 22 मार्च)" class="bg-gray-50 p-4 rounded-2xl font-bold outline-none">
+                    <input id="hAmt" type="number" placeholder="Amount ₹" class="bg-gray-50 p-4 rounded-2xl font-bold">
+                    <input id="hDate" type="text" placeholder="Date (e.g. 21 Mar)" class="bg-gray-50 p-4 rounded-2xl font-bold">
                 </div>
-                <input id="hReason" type="text" placeholder="किसकी मदद हुई? (e.g. 5 अनाथ बच्चों को राशन)" class="w-full bg-gray-50 p-4 rounded-2xl font-bold outline-none">
-                <input id="hYT" type="text" placeholder="YouTube वीडियो लिंक (Optional)" class="w-full bg-gray-50 p-4 rounded-2xl font-bold outline-none">
-                <button onclick="addHistory()" class="w-full bg-green-600 text-white font-black py-4 rounded-2xl shadow-lg hover:bg-green-700 uppercase tracking-widest">Add History Entry</button>
+                <input id="hReason" type="text" placeholder="Purpose (e.g. Food for 10 kids)" class="w-full bg-gray-50 p-4 rounded-2xl font-bold">
+                <input id="hYT" type="text" placeholder="YouTube Link (Optional)" class="w-full bg-gray-50 p-4 rounded-2xl font-bold">
+                <button onclick="saveHistory()" class="w-full bg-green-600 text-white font-black py-4 rounded-2xl">Post History</button>
             </div>
         </div>
 
+        <!-- Settings (Password Change) -->
+        <div class="bg-white rounded-[40px] p-8 shadow-xl border-4 border-slate-800">
+            <h2 class="text-xl font-black mb-6">⚙️ Admin Settings</h2>
+            <div class="space-y-4">
+                <label class="text-[10px] font-black text-gray-400 uppercase ml-2">New Admin Password</label>
+                <input id="newPass" type="text" placeholder="New Password" class="w-full bg-gray-50 p-4 rounded-2xl outline-none font-bold">
+                <button onclick="changePass()" class="w-full bg-slate-900 text-white font-black py-4 rounded-2xl uppercase text-xs tracking-widest">Update Password</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -60,41 +70,54 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Pin Check
-        const pin = prompt("Admin PIN:");
-        if(pin !== "1234") { document.body.innerHTML = "Access Denied"; }
+        let currentAdminPass = "1234";
 
-        // Fetch Data
-        db.ref('stats').on('value', s => {
-            const d = s.val() || {};
-            document.getElementById('fundVal').value = d.total || 0;
-            document.getElementById('noticeIn').value = d.notice_text || "";
-            document.getElementById('noticeStatus').checked = d.notice_visible || false;
-        });
+        // PASSWORD PROTECTION
+        db.ref('admin/config/pass').on('value', s => { if(s.val()) currentAdminPass = s.val(); });
 
-        function updateMaster() {
-            db.ref('stats').update({
-                total: parseFloat(document.getElementById('fundVal').value),
-                notice_text: document.getElementById('noticeIn').value,
-                notice_visible: document.getElementById('noticeStatus').checked
-            }).then(() => alert("Dashboard Updated!"));
+        function checkPin() {
+            if(document.getElementById('pinIn').value === currentAdminPass) {
+                document.getElementById('loginOverlay').classList.add('hidden');
+            } else alert("Wrong Password!");
         }
 
-        function addHistory() {
-            const amount = document.getElementById('hAmount').value;
+        function changePass() {
+            const newP = document.getElementById('newPass').value;
+            if(newP.length < 4) return alert("Min 4 characters!");
+            db.ref('admin/config').update({ pass: newP }).then(() => alert("Password Updated!"));
+        }
+
+        // STATS SAVE
+        db.ref('stats').on('value', s => {
+            const d = s.val() || {};
+            document.getElementById('fundIn').value = d.total || 0;
+            document.getElementById('noticeIn').value = d.notice_text || "";
+            document.getElementById('noticeToggle').checked = d.notice_visible || false;
+        });
+
+        function saveStats() {
+            db.ref('stats').update({
+                total: parseFloat(document.getElementById('fundIn').value),
+                notice_text: document.getElementById('noticeIn').value,
+                notice_visible: document.getElementById('noticeToggle').checked
+            }).then(() => alert("Stats Updated!"));
+        }
+
+        // HISTORY SAVE
+        function saveHistory() {
+            const amt = document.getElementById('hAmt').value;
             const date = document.getElementById('hDate').value;
-            const reason = document.getElementById('hReason').value;
+            const res = document.getElementById('hReason').value;
             const yt = document.getElementById('hYT').value;
 
-            if(!amount || !date || !reason) return alert("सारी जानकारी भरें!");
+            if(!amt || !date || !res) return alert("Fill all details!");
 
             db.ref('history').push({
-                amount: amount, date: date, reason: reason, yt_link: yt
+                amount: amt, date: date, reason: res, yt: yt
             }).then(() => {
                 alert("History Added!");
-                document.getElementById('hAmount').value = '';
+                document.getElementById('hAmt').value = '';
                 document.getElementById('hReason').value = '';
-                document.getElementById('hYT').value = '';
             });
         }
     </script>
