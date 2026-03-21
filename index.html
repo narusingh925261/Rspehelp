@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>मदद का हाथ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        body { background-color: #f3f4f6; -webkit-tap-highlight-color: transparent; }
+        .mobile-container { max-width: 480px; margin: 0 auto; min-h-screen; background: white; position: relative; overflow-x: hidden; }
+        .marquee-box { background: #fff4e6; overflow: hidden; white-space: nowrap; padding: 8px 0; border-bottom: 1px solid #ff9933; }
+        .marquee-content { display: inline-block; animation: scroll 20s linear infinite; font-weight: 600; color: #ea580c; }
+        @keyframes scroll { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 480px; background: white; border-top: 1px solid #eee; display: flex; justify-content: space-around; padding: 12px 0; z-index: 50; }
+    </style>
+</head>
+<body>
+
+<div class="mobile-container pb-24">
+    <!-- Top Counter Section -->
+    <div class="bg-gradient-to-br from-orange-500 to-red-600 text-white p-8 rounded-b-[45px] text-center shadow-lg animate__animated animate__fadeIn">
+        <h1 class="text-lg font-medium opacity-90">कुल मदद राशि ❤️</h1>
+        <div id="totalEarnings" class="text-5xl font-black mt-2 tracking-tight">₹ 0.00</div>
+        <div class="mt-4 bg-white/20 inline-block px-5 py-1.5 rounded-full text-sm font-semibold">
+            आज: <span id="todayEarnings">₹ 0.00</span>
+        </div>
+        <p class="text-[11px] mt-4 opacity-80 italic">“आपके सहयोग से अब तक इतनी मदद हो चुकी है”</p>
+    </div>
+
+    <!-- Notification Marquee -->
+    <div class="marquee-box">
+        <div id="notifText" class="marquee-content">लोड हो रहा है... आपका हर क्लिक कीमती है... </div>
+    </div>
+
+    <!-- Hero Image -->
+    <div class="p-5">
+        <div class="relative rounded-3xl overflow-hidden shadow-xl h-44 border-4 border-white">
+            <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=500" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 flex items-end p-4">
+                <p class="text-white text-xs leading-relaxed">आपका एक क्लिक किसी की जिंदगी बदल सकता है. आज ही एक अनाथ बच्चे की मुस्कान बनें। ❤️</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="px-5 space-y-4">
+        <button onclick="triggerAd()" class="w-full bg-red-500 hover:bg-red-600 active:scale-95 transition-all text-white font-bold py-5 rounded-2xl shadow-xl flex items-center justify-center space-x-3 text-lg">
+            <span>📽️ Ad देखकर मदद करें</span>
+        </button>
+        
+        <div class="grid grid-cols-2 gap-4">
+            <button onclick="shareApp()" class="bg-green-600 text-white p-4 rounded-2xl font-bold shadow-md flex flex-col items-center">
+                <span class="text-xl">📤</span>
+                <span class="text-xs mt-1">शेयर करें</span>
+            </button>
+            <button class="bg-blue-500 text-white p-4 rounded-2xl font-bold shadow-md flex flex-col items-center">
+                <span class="text-xl">⭐</span>
+                <span class="text-xs mt-1">डेली स्ट्रीक</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Help History -->
+    <div class="p-5 mt-4">
+        <h3 class="font-bold text-gray-800 mb-4 flex items-center">
+            <span class="mr-2 text-xl">📜</span> मदद का इतिहास
+        </h3>
+        <div id="historyList" class="space-y-3">
+            <!-- Data will load here -->
+        </div>
+    </div>
+</div>
+
+<!-- Bottom Navigation -->
+<nav class="bottom-nav">
+    <button class="text-orange-600 flex flex-col items-center"><span class="text-xl">🏠</span><span class="text-[10px] font-bold">होम</span></button>
+    <button class="text-gray-400 flex flex-col items-center"><span class="text-xl">📊</span><span class="text-[10px] font-bold">रिकॉर्ड</span></button>
+    <button class="text-gray-400 flex flex-col items-center"><span class="text-xl">🏆</span><span class="text-[10px] font-bold">विजेता</span></button>
+</nav>
+
+<!-- Success Popup -->
+<div id="adPopup" class="hidden fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-8">
+    <div class="bg-white rounded-3xl p-8 text-center animate__animated animate__zoomIn">
+        <div class="text-6xl mb-4">😇</div>
+        <h2 class="text-2xl font-bold text-gray-800">अद्भुत काम!</h2>
+        <p class="text-gray-600 mt-2">आपकी वजह से <span class="text-green-600 font-bold">₹0.50</span> फंड में जुड़ गए हैं।</p>
+        <button onclick="document.getElementById('adPopup').classList.add('hidden')" class="mt-6 bg-orange-500 text-white w-full py-3 rounded-xl font-bold">सेवा जारी रखें</button>
+    </div>
+</div>
+
+<script>
+    // Firebase Configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyCatl9XQlXXxAedYUxhuuhGvlPCQRHPSZU",
+        authDomain: "help-e3df0.firebaseapp.com",
+        databaseURL: "https://help-e3df0-default-rtdb.firebaseio.com",
+        projectId: "help-e3df0",
+        storageBucket: "help-e3df0.firebasestorage.app",
+        messagingSenderId: "946692527261",
+        appId: "1:946692527261:web:a9d92261d0b589bb587074"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Data Fetching
+    db.ref('stats').on('value', (snapshot) => {
+        const data = snapshot.val();
+        document.getElementById('totalEarnings').innerText = `₹ ${data.total.toFixed(2)}`;
+        document.getElementById('todayEarnings').innerText = `₹ ${data.today.toFixed(2)}`;
+        document.getElementById('notifText').innerText = data.notification;
+    });
+
+    db.ref('history').limitToLast(3).on('value', (snapshot) => {
+        const historyList = document.getElementById('historyList');
+        historyList.innerHTML = '';
+        snapshot.forEach((child) => {
+            const item = child.val();
+            historyList.innerHTML += `
+                <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100 flex items-center animate__animated animate__fadeIn">
+                    <div class="bg-orange-100 text-xl p-3 rounded-xl mr-4">${item.icon}</div>
+                    <div class="flex-1">
+                        <p class="text-sm font-bold text-gray-800">₹ ${item.amount} - ${item.title}</p>
+                        <p class="text-[10px] text-gray-400">${item.date}</p>
+                    </div>
+                </div>`;
+        });
+    });
+
+    function triggerAd() {
+        // Logic: Show Adsterra / AdMob Ad here
+        // Ad खत्म होने पर:
+        db.ref('stats/total').transaction(current => (current || 0) + 0.50);
+        db.ref('stats/today').transaction(current => (current || 0) + 0.50);
+        
+        document.getElementById('adPopup').classList.remove('hidden');
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+    }
+
+    function shareApp() {
+        const text = "बिना पैसे दिए सिर्फ Ads देखकर गरीबों की मदद करें ❤️ लिंक: " + window.location.href;
+        window.open(`whatsapp://send?text=${encodeURIComponent(text)}`);
+    }
+</script>
+</body>
+          </html>
