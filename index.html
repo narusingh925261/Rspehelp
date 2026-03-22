@@ -179,17 +179,66 @@
     let myData = null;
     let isWatchingAd = false;
 
-    // 🚩 Authentication System (With Error Catching)
-    function toggleAuth() {
+    // 1. पेज लोड होते ही Redirect का परिणाम चेक करें (यह अनिवार्य है)
+auth.getRedirectResult().then((result) => {
+    if (result.user) {
+        // लॉगिन सफल होने पर यहाँ डेटा लोड होगा
+        console.log("लॉगिन सफल: ", result.user.displayName);
+    }
+}).catch((error) => {
+    // अगर कोई एरर आता है (जैसे नेटवर्क एरर)
+    console.error("Auth Error:", error.code);
+    if (error.code === 'auth/network-request-failed') {
+        alert("नेटवर्क की समस्या! कृपया इंटरनेट चेक करें।");
+    } else if (error.code === 'auth/unauthorized-domain') {
+        alert("एरर: अपनी Vercel लिंक को Firebase Authorized Domains में जोड़ें!");
+    }
+});
+
+// 2. मुख्य toggleAuth फंक्शन
+function toggleAuth() {
+    // बटन की स्थिति बदलें ताकि यूजर बार-बार क्लिक न करे
+    const loginBtn = document.getElementById('loginBtn');
+    
     if (!auth.currentUser) {
-        // मोबाइल पर Popup अक्सर फेल हो जाता है, Redirect का उपयोग करें
-        auth.signInWithRedirect(provider).catch(e => {
-            alert("लॉगिन एरर: " + e.message);
-        });
+        // लॉगिन नहीं है -> Google पर भेजें (Redirect)
+        // मोबाइल के लिए यही सबसे बेस्ट तरीका है
+        loginBtn.innerText = "लोड हो रहा है...";
+        auth.signInWithRedirect(provider);
     } else {
-        if(confirm("लॉगआउट करना चाहते हैं?")) auth.signOut().then(() => location.reload());
+        // पहले से लॉगिन है -> लॉगआउट करें
+        if (confirm("क्या आप मिशन से लॉगआउट करना चाहते हैं? ❤️")) {
+            auth.signOut().then(() => {
+                alert("सफलतापूर्वक लॉगआउट!");
+                location.reload(); // पेज रिफ्रेश करें
+            }).catch(err => {
+                alert("लॉगआउट में समस्या: " + err.message);
+            });
+        }
     }
 }
+
+// 3. यूजर स्टेट बदलना (UI अपडेट करने के लिए)
+auth.onAuthStateChanged(user => {
+    const loginBtn = document.getElementById('loginBtn');
+    if (user) {
+        // यूजर लॉगिन है
+        loginBtn.innerText = "LOGOUT";
+        db.ref('users/' + user.uid).on('value', s => {
+            myData = s.val() || { points: 0 };
+            updateUI(user, myData);
+            if (!myData.realName) {
+                document.getElementById('setupModal').classList.remove('hidden');
+            }
+        });
+    } else {
+        // यूजर लॉगिन नहीं है
+        loginBtn.innerText = "LOGIN WITH GOOGLE";
+        document.getElementById('userName').innerText = "नमस्ते, मेहमान";
+        document.getElementById('topPoints').innerText = "0";
+        document.getElementById('userRankInfo').innerText = "Rank: #--";
+    }
+});
     auth.onAuthStateChanged(user => {
         if (user) {
             db.ref('users/' + user.uid).on('value', s => {
