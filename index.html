@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>मदद का हाथ - मिशन 2024</title>
+    <title>मदद का हाथ - सबका साथ</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Firebase SDK (Version 9 Compatibility) -->
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
@@ -13,31 +14,31 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
     <style>
-        body { background-color: #f3f4f6; font-family: sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #f3f4f6; font-family: sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
         .mobile-frame { max-width: 480px; margin: 0 auto; background: white; min-height: 100vh; position: relative; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         .orange-grad { background: linear-gradient(135deg, #FF9933 0%, #FF5722 100%); }
         .nav-item.active { color: #f97316 !important; font-weight: 800; border-top: 3px solid #f97316; }
-        .disabled-btn { background: #94a3b8 !important; pointer-events: none; animation: none !important; }
+        .disabled-btn { background: #94a3b8 !important; pointer-events: none; opacity: 0.7; }
     </style>
 </head>
 <body>
 
 <div class="mobile-frame pb-28 shadow-2xl">
     
-    <!-- Top Nav -->
+    <!-- Top Header -->
     <div class="p-4 flex justify-between items-center bg-white sticky top-0 z-[60] shadow-sm">
         <div class="flex items-center space-x-3" onclick="switchTab('profile')">
             <img id="userImg" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="w-10 h-10 rounded-full border border-orange-500 p-0.5">
             <div>
                 <p id="userName" class="text-xs font-black text-gray-800">नमस्ते, मेहमान</p>
-                <p id="userRankInfo" class="text-[9px] text-orange-600 font-bold uppercase">Rank: Loading...</p>
+                <p id="userRankInfo" class="text-[9px] text-orange-600 font-bold uppercase">Rank: #--</p>
             </div>
         </div>
         <div class="bg-orange-50 px-4 py-1.5 rounded-2xl border border-orange-100 text-center min-w-[80px]">
             <p id="topPoints" class="text-xl font-black text-orange-600 leading-none">0</p>
-            <p class="text-[8px] font-bold text-gray-400 uppercase">Points</p>
+            <p class="text-[8px] font-bold text-gray-400 uppercase text-center">Points</p>
         </div>
     </div>
 
@@ -46,7 +47,7 @@
         <div class="orange-grad text-white p-10 rounded-b-[50px] text-center shadow-lg">
             <p class="text-[10px] font-bold uppercase tracking-widest mb-1">कुल एकत्रित मदद राशि ❤️</p>
             <h1 id="totalFundDisplay" class="text-5xl font-black italic tracking-tighter">₹ 0</h1>
-            <p class="mt-4 text-[10px] opacity-80 italic font-medium tracking-tight">“यह राशि एडमिन द्वारा अपडेट की जाती है”</p>
+            <p class="mt-4 text-[10px] opacity-80 italic font-medium">“यह फंड सीधे अनाथ बच्चों की सेवा में जाता है”</p>
         </div>
 
         <!-- 📢 Notice -->
@@ -56,7 +57,7 @@
             </div>
         </div>
 
-        <!-- Banner Ad (Loads on Start) -->
+        <!-- Banner Ad -->
         <div class="w-full flex justify-center mt-6 px-4 min-h-[60px]">
             <script type="text/javascript">
                 atOptions = { 'key' : '5ef61b9ce5db99a105f2eab3538cf716', 'format' : 'iframe', 'height' : 60, 'width' : 468, 'params' : {} };
@@ -64,22 +65,31 @@
             <script type="text/javascript" src="https://www.highperformanceformat.com/5ef61b9ce5db99a105f2eab3538cf716/invoke.js"></script>
         </div>
 
-        <!-- ACTION SECTION -->
-        <div class="px-6 mt-6 space-y-4">
-            <!-- Button that opens Smart Link -->
-            <button id="adBtn" onclick="watchAdAction()" class="w-full bg-red-500 text-white font-black py-7 rounded-[35px] shadow-2xl text-2xl flex flex-col items-center animate__animated animate__pulse animate__infinite">
+        <!-- Home Photo -->
+        <div class="p-5 mt-2">
+            <div class="relative rounded-[40px] overflow-hidden shadow-2xl h-48 border-4 border-white">
+                <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=600" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 flex items-end p-6">
+                    <p class="text-white text-[11px] font-medium leading-relaxed italic">"आपका एक क्लिक, किसी भूखे बच्चे की मुस्कान बन सकता है।" ❤️</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="px-6 mt-4 space-y-4">
+            <button id="adBtn" onclick="watchAdAction()" class="w-full bg-red-600 text-white font-black py-7 rounded-[35px] shadow-2xl text-2xl flex flex-col items-center animate__animated animate__pulse animate__infinite transition-all">
                 <span>📽️ Ad देखकर मदद करें</span>
                 <span class="text-[10px] font-normal uppercase tracking-widest mt-1">+10 Points / Click</span>
             </button>
             <p id="timerMsg" class="hidden text-center text-[11px] font-bold text-red-500 animate__animated animate__flash">विज्ञापन खुल गया है, कृपया 15s प्रतीक्षा करें...</p>
             
-            <button onclick="shareApp()" class="w-full bg-green-600 text-white font-black py-5 rounded-[30px] shadow-lg flex items-center justify-center space-x-3 text-sm">
+            <button onclick="shareApp()" class="w-full bg-green-600 text-white font-black py-5 rounded-[30px] shadow-lg flex items-center justify-center space-x-3 text-sm active:scale-95 transition-all">
                 <span>📤 मिशन को शेयर करें</span>
                 <span class="bg-white/20 px-3 py-1 rounded-full text-[10px]">+20 Points</span>
             </button>
         </div>
 
-        <!-- Native Banner Ad -->
+        <!-- Native Ad -->
         <div class="px-6 mt-10 mb-6">
             <div class="bg-gray-50 p-4 rounded-3xl border border-dashed border-gray-300">
                 <script async="async" data-cfasync="false" src="https://pl28927536.profitablecpmratenetwork.com/48143ee0c3489a8ea92fae88c7feceea/invoke.js"></script>
@@ -91,36 +101,36 @@
     <!-- History Tab -->
     <div id="historyTab" class="tab-content p-6 animate__animated animate__fadeIn">
         <h2 class="text-2xl font-black mb-6">📜 मदद का रिकॉर्ड</h2>
-        <div id="historyList" class="space-y-4"></div>
+        <div id="historyList" class="space-y-4 pb-20"></div>
     </div>
 
     <!-- Leaderboard Tab -->
     <div id="leaderboardTab" class="tab-content p-6 animate__animated animate__fadeIn">
         <h2 class="text-3xl font-black text-gray-800 mb-6">टॉप मददगार 🏆</h2>
-        <div id="leaderboardList" class="space-y-4"></div>
+        <div id="leaderboardList" class="space-y-4 pb-20"></div>
     </div>
 
     <!-- Profile Tab -->
     <div id="profileTab" class="tab-content p-8 animate__animated animate__fadeIn">
         <div class="bg-white rounded-[45px] p-8 border border-gray-100 shadow-2xl text-center">
             <img id="profileImg" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="w-24 h-24 rounded-full mx-auto border-4 border-orange-500 shadow-xl">
-            <h3 id="pName" class="text-2xl font-black text-gray-800 tracking-tight italic">User Name</h3>
+            <h3 id="pName" class="text-2xl font-black mt-4 italic">User Name</h3>
             <p id="pAddress" class="text-[11px] text-gray-400 font-bold uppercase mt-1">📍 Location not set</p>
             <div class="grid grid-cols-2 gap-4 mt-8">
                 <div class="bg-orange-50 p-6 rounded-[35px] border border-orange-100">
-                    <p id="pPoints" class="text-3xl font-black text-orange-600">0</p>
+                    <p id="pPoints" class="text-3xl font-black text-orange-600 leading-none">0</p>
                     <p class="text-[9px] font-bold text-gray-400 uppercase">Points</p>
                 </div>
                 <div class="bg-blue-50 p-6 rounded-[35px] border border-blue-100">
-                    <p id="pRank" class="text-3xl font-black text-blue-600">#--</p>
+                    <p id="pRank" class="text-3xl font-black text-blue-600 leading-none">#--</p>
                     <p class="text-[9px] font-bold text-gray-400 uppercase">Rank</p>
                 </div>
             </div>
-            <button onclick="toggleAuth()" id="loginBtn" class="mt-8 w-full bg-gray-900 text-white font-bold py-4 rounded-2xl text-xs uppercase shadow-lg">Login / Logout</button>
+            <button onclick="toggleAuth()" id="loginBtn" class="mt-8 w-full bg-gray-900 text-white font-bold py-4 rounded-2xl text-xs uppercase shadow-lg active:scale-95 transition-all">Login / Logout</button>
         </div>
     </div>
 
-    <!-- Bottom Nav -->
+    <!-- Bottom Navigation -->
     <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t p-3 flex justify-around z-[100] shadow-2xl">
         <button onclick="switchTab('home')" class="nav-item flex flex-col items-center active text-orange-500">
             <span class="text-xl">🏠</span><span class="text-[8px] font-black uppercase mt-1">Home</span>
@@ -139,18 +149,19 @@
 
 <!-- MANDATORY Setup Modal -->
 <div id="setupModal" class="hidden fixed inset-0 bg-black/95 z-[200] flex items-center justify-center p-8 backdrop-blur-md">
-    <div class="bg-white rounded-[50px] p-10 w-full max-w-sm text-center">
+    <div class="bg-white rounded-[50px] p-10 w-full max-w-sm text-center shadow-2xl">
         <h2 class="text-2xl font-black mb-6">प्रोफाइल सेटअप 🇮🇳</h2>
         <input id="nameInput" type="text" placeholder="आपका असली नाम" class="w-full bg-gray-50 p-4 rounded-2xl mb-4 font-bold outline-none border focus:border-orange-500">
         <input id="cityInput" type="text" placeholder="शहर, राज्य" class="w-full bg-gray-50 p-4 rounded-2xl mb-8 font-bold outline-none border focus:border-orange-500">
-        <button onclick="saveIdentity()" class="w-full bg-orange-500 text-white font-black py-4 rounded-2xl shadow-xl">मिशन शुरू करें</button>
+        <button onclick="saveIdentity()" class="w-full bg-orange-500 text-white font-black py-4 rounded-2xl shadow-xl active:scale-95 transition-all">मिशन शुरू करें</button>
     </div>
 </div>
 
-<!-- Social Bar Ad (Keep it for extra revenue) -->
+<!-- Social Bar Ad -->
 <script src="https://pl28927780.profitablecpmratenetwork.com/a7/6e/b4/a76eb4e64e7550bb4bf787ad5dbaa0b4.js"></script>
 
 <script>
+    // 🚩 Firebase Configuration (Checked & Fixed)
     const firebaseConfig = {
         apiKey: "AIzaSyCatl9XQlXXxAedYUxhuuhGvlPCQRHPSZU",
         authDomain: "help-e3df0.firebaseapp.com",
@@ -168,10 +179,22 @@
     let myData = null;
     let isWatchingAd = false;
 
-    // Login logic
+    // 🚩 Authentication System (With Error Catching)
     function toggleAuth() {
-        if (!auth.currentUser) auth.signInWithPopup(provider);
-        else if(confirm("लॉगआउट?")) auth.signOut().then(() => location.reload());
+        if (!auth.currentUser) {
+            auth.signInWithPopup(provider).then((res) => {
+                console.log("Logged In:", res.user.displayName);
+            }).catch(e => {
+                console.error("Auth Error:", e.code);
+                if(e.code === 'auth/unauthorized-domain') {
+                    alert("एरर: Vercel लिंक को Firebase Authorized Domains में जोड़ें!");
+                } else {
+                    alert("लॉगिन एरर: " + e.message);
+                }
+            });
+        } else {
+            if(confirm("लॉगआउट करना चाहते हैं?")) auth.signOut().then(() => location.reload());
+        }
     }
 
     auth.onAuthStateChanged(user => {
@@ -187,22 +210,26 @@
     function saveIdentity() {
         const n = document.getElementById('nameInput').value.trim();
         const c = document.getElementById('cityInput').value.trim();
-        if (n.length < 3 || c.length < 3) return alert("सही जानकारी दें ❤️");
+        if (n.length < 3 || c.length < 3) return alert("सही जानकारी भरें ❤️");
         db.ref('users/' + auth.currentUser.uid).update({
             realName: n, address: c, photo: auth.currentUser.photoURL, points: myData.points || 0
         }).then(() => document.getElementById('setupModal').classList.add('hidden'));
     }
 
-    // 🚀 YOUR SMART LINK ACTION
+    // 🚩 Ad System (Anti-Cheat & Bug Fixed)
     function watchAdAction() {
         if (!auth.currentUser) return alert("कृपया लॉगिन करें ❤️");
         if (isWatchingAd) return;
 
-        // 1. Open YOUR Smart Link
+        // Open Smart Link
         const smartLink = "https://www.profitablecpmratenetwork.com/qyjs2m0xi?key=dcaf2f5117175e91f113a15101013244"; 
-        window.open(smartLink, '_blank');
+        const adWindow = window.open(smartLink, '_blank');
+        
+        if (!adWindow) {
+            alert("कृपया ब्राउज़र सेटिंग्स में 'Popups' को ALLOW करें वरना पॉइंट्स नहीं मिलेंगे!");
+            return;
+        }
 
-        // 2. Start Timer
         isWatchingAd = true;
         const btn = document.getElementById('adBtn');
         const timerMsg = document.getElementById('timerMsg');
@@ -215,13 +242,13 @@
             btn.innerHTML = `<span>प्रतीक्षा करें (${timeLeft}s)</span>`;
             if (timeLeft <= 0) {
                 clearInterval(interval);
-                finalizePoints();
+                finalizeAdPoints();
             }
         }, 1000);
     }
 
-    function finalizePoints() {
-        db.ref('users/' + auth.currentUser.uid + '/points').transaction((p) => (p || 0) + 10);
+    function finalizeAdPoints() {
+        db.ref('users/' + auth.currentUser.uid + '/points').transaction(p => (p || 0) + 10);
         confetti({ particleCount: 150, spread: 80, origin: { y: 0.8 }, colors: ['#FF9933', '#ffffff', '#138808'] });
         
         isWatchingAd = false;
@@ -231,7 +258,7 @@
         btn.innerHTML = `<span>📽️ Ad देखकर मदद करें</span><span class="text-[10px] font-normal uppercase tracking-widest mt-1">+10 Points / Click</span>`;
     }
 
-    // Load Stats
+    // 🚩 Data Loading (Stats, History, Ranking)
     db.ref('stats').on('value', s => {
         const data = s.val() || {};
         document.getElementById('totalFundDisplay').innerText = `₹ ${data.total || 0}`;
@@ -243,9 +270,9 @@
 
     function switchTab(tab) {
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('text-orange-500'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active', 'text-orange-500'));
         document.getElementById(tab + 'Tab').classList.add('active');
-        event.currentTarget.classList.add('text-orange-500');
+        event.currentTarget.classList.add('active', 'text-orange-500');
         if(tab === 'leaderboard') loadLeaderboard();
         if(tab === 'history') loadHistory();
     }
@@ -256,10 +283,10 @@
             list.innerHTML = '';
             s.forEach(child => {
                 const h = child.val();
-                list.innerHTML = `<div class="bg-white border-2 border-gray-100 p-5 rounded-[30px] shadow-sm mb-4">
+                list.innerHTML = `<div class="bg-white border-2 border-gray-100 p-5 rounded-[30px] shadow-sm animate__animated animate__fadeInUp">
                     <div class="flex justify-between items-center mb-2 text-[10px] font-black uppercase text-orange-500">
                         <span>${h.date}</span>
-                        <span class="text-green-600">₹ ${h.amount}</span>
+                        <span class="text-green-600 font-bold italic">₹ ${h.amount}</span>
                     </div>
                     <h4 class="font-bold text-gray-800 text-sm leading-tight mb-3">${h.reason}</h4>
                     ${h.yt ? `<a href="${h.yt}" target="_blank" class="bg-red-600 text-white px-3 py-1.5 rounded-lg text-[10px] font-black inline-block">🎥 वीडियो सबूत</a>` : ''}
@@ -285,9 +312,9 @@
             s.forEach(c => { if(c.val().points > 0) uArr.push({id: c.key, pts: c.val().points}); });
             uArr.sort((a,b) => b.pts - a.pts);
             const rank = uArr.findIndex(u => u.id === uid) + 1;
-            const rankText = rank > 0 ? "#" + rank : "No Rank";
-            document.getElementById('userRankInfo').innerText = "Rank: " + rankText;
-            document.getElementById('pRank').innerText = rankText;
+            const rt = rank > 0 ? "#" + rank : "No Rank";
+            document.getElementById('userRankInfo').innerText = "Rank: " + rt;
+            document.getElementById('pRank').innerText = rt;
         });
     }
 
@@ -303,7 +330,7 @@
                     <span class="w-8 font-black text-gray-300 text-lg">${rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank}</span>
                     <img src="${u.photo}" class="w-12 h-12 rounded-full border-2 border-orange-500 p-0.5">
                     <div class="ml-4 flex-1">
-                        <h4 class="font-black text-gray-800 text-xs uppercase">${u.realName}</h4>
+                        <h4 class="font-black text-gray-800 text-xs uppercase tracking-tighter">${u.realName}</h4>
                         <p class="text-[9px] text-gray-400 font-bold uppercase italic tracking-tighter">📍 ${u.address}</p>
                     </div>
                     <p class="text-xl font-black text-orange-600">${u.points || 0}</p>
@@ -314,7 +341,7 @@
 
     function shareApp() {
         if(auth.currentUser) db.ref('users/' + auth.currentUser.uid + '/points').transaction(p => (p || 0) + 20);
-        const txt = `Ads देखकर मैं गरीबों की मदद कर रहा हूँ! ❤️\nजुड़ें: ${window.location.href}`;
+        const txt = `Ads देखकर मैं गरीबों की मदद कर रहा हूँ! मेरा रैंक ${document.getElementById('pRank').innerText} है। ❤️\nजुड़ें: ${window.location.href}`;
         window.open(`https://wa.me/?text=${encodeURIComponent(txt)}`);
     }
 </script>
