@@ -341,7 +341,7 @@
 
     function shareApp() {
         if(auth.currentUser) db.ref('users/' + auth.currentUser.uid + '/points').transaction(p => (p || 0) + 20);
-        const txt = `Ads देखकर मैं गरीबों की मदद कर रहा हूँ! मेरा रैंक ${document.getElementById('pRank').innerText} है। ❤️\nजुड़ें: ${window.location.href}`;
+        const txt = `Ads देखकर मैं गरीबों की मदद कर रहा हूँ! मेरा रैंक ${document.getElementById('pRank').innerText} है। ❤️\nआप भी जुड़ें और मदद करें: ${window.location.href}`;
         window.open(`https://wa.me/?text=${encodeURIComponent(txt)}`);
     }
 </script>
