@@ -26,7 +26,7 @@
 
 <div class="mobile-frame pb-28 shadow-2xl">
     
-    <!-- Top Header -->
+    <!-- Top Nav -->
     <div class="p-4 flex justify-between items-center bg-white sticky top-0 z-[60] shadow-sm">
         <div class="flex items-center space-x-3" onclick="switchTab('profile')">
             <img id="userImg" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="w-10 h-10 rounded-full border border-orange-500 p-0.5">
@@ -46,10 +46,10 @@
         <div class="orange-grad text-white p-10 rounded-b-[50px] text-center shadow-lg">
             <p class="text-[10px] font-bold uppercase tracking-widest mb-1">कुल एकत्रित मदद राशि ❤️</p>
             <h1 id="totalFundDisplay" class="text-5xl font-black italic tracking-tighter">₹ 0</h1>
-            <p class="mt-4 text-[10px] opacity-80 italic font-medium">“यह राशि एडमिन द्वारा अपडेट की जाती है”</p>
+            <p class="mt-4 text-[10px] opacity-80 italic font-medium tracking-tight">“यह राशि एडमिन द्वारा अपडेट की जाती है”</p>
         </div>
 
-        <!-- 📢 Important Notice (Admin Controlled) -->
+        <!-- 📢 Notice -->
         <div id="noticeContainer" class="hidden px-5 -mt-6">
             <div class="bg-white p-5 rounded-[30px] shadow-xl border-l-4 border-orange-500">
                 <p id="noticeText" class="text-xs text-gray-600 font-bold leading-relaxed italic"></p>
@@ -64,19 +64,9 @@
             <script type="text/javascript" src="https://www.highperformanceformat.com/5ef61b9ce5db99a105f2eab3538cf716/invoke.js"></script>
         </div>
 
-        <!-- Home Image -->
-        <div class="p-5 mt-2">
-            <div class="relative rounded-[40px] overflow-hidden shadow-2xl h-48 border-4 border-white">
-                <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=600" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/80 flex items-end p-6">
-                    <p class="text-white text-[11px] font-medium leading-relaxed italic">"आपका एक क्लिक, किसी भूखे बच्चे की मुस्कान बन सकता है।" ❤️</p>
-                </div>
-            </div>
-        </div>
-
         <!-- ACTION SECTION -->
-        <div class="px-6 space-y-4">
-            <!-- Popunder triggers ONLY on this button click -->
+        <div class="px-6 mt-6 space-y-4">
+            <!-- Button that opens Smart Link -->
             <button id="adBtn" onclick="watchAdAction()" class="w-full bg-red-500 text-white font-black py-7 rounded-[35px] shadow-2xl text-2xl flex flex-col items-center animate__animated animate__pulse animate__infinite">
                 <span>📽️ Ad देखकर मदद करें</span>
                 <span class="text-[10px] font-normal uppercase tracking-widest mt-1">+10 Points / Click</span>
@@ -89,7 +79,7 @@
             </button>
         </div>
 
-        <!-- Native Ad (Loads on Start) -->
+        <!-- Native Banner Ad -->
         <div class="px-6 mt-10 mb-6">
             <div class="bg-gray-50 p-4 rounded-3xl border border-dashed border-gray-300">
                 <script async="async" data-cfasync="false" src="https://pl28927536.profitablecpmratenetwork.com/48143ee0c3489a8ea92fae88c7feceea/invoke.js"></script>
@@ -98,21 +88,23 @@
         </div>
     </div>
 
-    <!-- Other Tabs (History, Leaderboard, Profile) - Same as before -->
+    <!-- History Tab -->
     <div id="historyTab" class="tab-content p-6 animate__animated animate__fadeIn">
         <h2 class="text-2xl font-black mb-6">📜 मदद का रिकॉर्ड</h2>
         <div id="historyList" class="space-y-4"></div>
     </div>
 
+    <!-- Leaderboard Tab -->
     <div id="leaderboardTab" class="tab-content p-6 animate__animated animate__fadeIn">
         <h2 class="text-3xl font-black text-gray-800 mb-6">टॉप मददगार 🏆</h2>
         <div id="leaderboardList" class="space-y-4"></div>
     </div>
 
+    <!-- Profile Tab -->
     <div id="profileTab" class="tab-content p-8 animate__animated animate__fadeIn">
         <div class="bg-white rounded-[45px] p-8 border border-gray-100 shadow-2xl text-center">
-            <img id="profileImg" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="w-24 h-24 rounded-full mx-auto border-4 border-orange-500 p-1 mb-4 shadow-xl">
-            <h3 id="pName" class="text-2xl font-black text-gray-800 tracking-tight">User Name</h3>
+            <img id="profileImg" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="w-24 h-24 rounded-full mx-auto border-4 border-orange-500 shadow-xl">
+            <h3 id="pName" class="text-2xl font-black text-gray-800 tracking-tight italic">User Name</h3>
             <p id="pAddress" class="text-[11px] text-gray-400 font-bold uppercase mt-1">📍 Location not set</p>
             <div class="grid grid-cols-2 gap-4 mt-8">
                 <div class="bg-orange-50 p-6 rounded-[35px] border border-orange-100">
@@ -128,13 +120,13 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation -->
+    <!-- Bottom Nav -->
     <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t p-3 flex justify-around z-[100] shadow-2xl">
         <button onclick="switchTab('home')" class="nav-item flex flex-col items-center active text-orange-500">
             <span class="text-xl">🏠</span><span class="text-[8px] font-black uppercase mt-1">Home</span>
         </button>
         <button onclick="switchTab('history')" class="nav-item flex flex-col items-center text-gray-300">
-            <span class="text-xl">📜</span><span class="text-[8px] font-black uppercase mt-1">History</span>
+            <span class="text-xl">📜</span><span class="text-[8px] font-black uppercase mt-1">Record</span>
         </button>
         <button onclick="switchTab('leaderboard')" class="nav-item flex flex-col items-center text-gray-300">
             <span class="text-xl">🏆</span><span class="text-[8px] font-black uppercase mt-1">Heroes</span>
@@ -155,11 +147,10 @@
     </div>
 </div>
 
-<!-- 2. Social Bar Ad (Page Load par aayega) -->
+<!-- Social Bar Ad (Keep it for extra revenue) -->
 <script src="https://pl28927780.profitablecpmratenetwork.com/a7/6e/b4/a76eb4e64e7550bb4bf787ad5dbaa0b4.js"></script>
 
 <script>
-    // Firebase Config
     const firebaseConfig = {
         apiKey: "AIzaSyCatl9XQlXXxAedYUxhuuhGvlPCQRHPSZU",
         authDomain: "help-e3df0.firebaseapp.com",
@@ -177,7 +168,7 @@
     let myData = null;
     let isWatchingAd = false;
 
-    // AUTH & SETUP
+    // Login logic
     function toggleAuth() {
         if (!auth.currentUser) auth.signInWithPopup(provider);
         else if(confirm("लॉगआउट?")) auth.signOut().then(() => location.reload());
@@ -202,18 +193,16 @@
         }).then(() => document.getElementById('setupModal').classList.add('hidden'));
     }
 
-    // 🚀 FIXED: AD ACTION (ONLY BUTTON CLICK TRIGGERS AD)
+    // 🚀 YOUR SMART LINK ACTION
     function watchAdAction() {
-        if (!auth.currentUser) return alert("कृपया पॉइंट्स के लिए लॉगिन करें ❤️");
-        if (!myData.realName) return;
+        if (!auth.currentUser) return alert("कृपया लॉगिन करें ❤️");
         if (isWatchingAd) return;
 
-        // 1. Trigger Popunder/Direct Link ONLY on button click
-        // अपनी Adsterra Direct Link यहाँ डालें
-        const directAdLink = "https://www.profitablecpmratenetwork.com/qyjs2m0xi?key=dcaf2f5117175e91f113a15101013244"; 
-        window.open(directAdLink, '_blank');
+        // 1. Open YOUR Smart Link
+        const smartLink = "https://www.profitablecpmratenetwork.com/qyjs2m0xi?key=dcaf2f5117175e91f113a15101013244"; 
+        window.open(smartLink, '_blank');
 
-        // 2. Start Anti-Cheat Timer
+        // 2. Start Timer
         isWatchingAd = true;
         const btn = document.getElementById('adBtn');
         const timerMsg = document.getElementById('timerMsg');
@@ -226,13 +215,13 @@
             btn.innerHTML = `<span>प्रतीक्षा करें (${timeLeft}s)</span>`;
             if (timeLeft <= 0) {
                 clearInterval(interval);
-                addPointsToUser();
+                finalizePoints();
             }
         }, 1000);
     }
 
-    function addPointsToUser() {
-        db.ref('users/' + auth.currentUser.uid + '/points').transaction((current) => (current || 0) + 10);
+    function finalizePoints() {
+        db.ref('users/' + auth.currentUser.uid + '/points').transaction((p) => (p || 0) + 10);
         confetti({ particleCount: 150, spread: 80, origin: { y: 0.8 }, colors: ['#FF9933', '#ffffff', '#138808'] });
         
         isWatchingAd = false;
@@ -242,7 +231,7 @@
         btn.innerHTML = `<span>📽️ Ad देखकर मदद करें</span><span class="text-[10px] font-normal uppercase tracking-widest mt-1">+10 Points / Click</span>`;
     }
 
-    // UI & TAB LOGIC
+    // Load Stats
     db.ref('stats').on('value', s => {
         const data = s.val() || {};
         document.getElementById('totalFundDisplay').innerText = `₹ ${data.total || 0}`;
@@ -287,10 +276,10 @@
         document.getElementById('topPoints').innerText = data.points || 0;
         document.getElementById('pPoints').innerText = data.points || 0;
         document.getElementById('pAddress').innerText = "📍 " + (data.address || "Unknown");
-        calculateMyRank(user.uid);
+        calculateRank(user.uid);
     }
 
-    function calculateMyRank(uid) {
+    function calculateRank(uid) {
         db.ref('users').once('value', s => {
             let uArr = [];
             s.forEach(c => { if(c.val().points > 0) uArr.push({id: c.key, pts: c.val().points}); });
@@ -325,7 +314,7 @@
 
     function shareApp() {
         if(auth.currentUser) db.ref('users/' + auth.currentUser.uid + '/points').transaction(p => (p || 0) + 20);
-        const txt = `Ads देखकर मैं गरीबों की मदद कर रहा हूँ! मेरा रैंक #${document.getElementById('pRank').innerText} है। ❤️\nजुड़ें: ${window.location.href}`;
+        const txt = `Ads देखकर मैं गरीबों की मदद कर रहा हूँ! ❤️\nजुड़ें: ${window.location.href}`;
         window.open(`https://wa.me/?text=${encodeURIComponent(txt)}`);
     }
 </script>
