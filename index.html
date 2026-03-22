@@ -181,22 +181,15 @@
 
     // 🚩 Authentication System (With Error Catching)
     function toggleAuth() {
-        if (!auth.currentUser) {
-            auth.signInWithPopup(provider).then((res) => {
-                console.log("Logged In:", res.user.displayName);
-            }).catch(e => {
-                console.error("Auth Error:", e.code);
-                if(e.code === 'auth/unauthorized-domain') {
-                    alert("एरर: Vercel लिंक को Firebase Authorized Domains में जोड़ें!");
-                } else {
-                    alert("लॉगिन एरर: " + e.message);
-                }
-            });
-        } else {
-            if(confirm("लॉगआउट करना चाहते हैं?")) auth.signOut().then(() => location.reload());
-        }
+    if (!auth.currentUser) {
+        // मोबाइल पर Popup अक्सर फेल हो जाता है, Redirect का उपयोग करें
+        auth.signInWithRedirect(provider).catch(e => {
+            alert("लॉगिन एरर: " + e.message);
+        });
+    } else {
+        if(confirm("लॉगआउट करना चाहते हैं?")) auth.signOut().then(() => location.reload());
     }
-
+}
     auth.onAuthStateChanged(user => {
         if (user) {
             db.ref('users/' + user.uid).on('value', s => {
